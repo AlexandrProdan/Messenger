@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:text="Register"
         android:textSize="45dp"
+        android:textColor="@color/purple_500"
         app:layout_constraintBottom_toTopOf="@+id/editTextEmailRegister"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

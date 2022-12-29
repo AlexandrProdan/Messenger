@@ -10,4 +10,7 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="register">Register</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="email">Email</string>
+    <string name="reset_password">Reset Password</string>
 </resources>

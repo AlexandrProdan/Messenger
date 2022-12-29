@@ -17,12 +17,20 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginVM extends AndroidViewModel {
     public static final String TAG = "LoginVM";
     private FirebaseAuth auth;
-    MutableLiveData<String> error = new MutableLiveData<>();
-    MutableLiveData<FirebaseUser> user = new MutableLiveData<>();
+    private MutableLiveData<String> error = new MutableLiveData<>();
+    private MutableLiveData<FirebaseUser> user = new MutableLiveData<>();
 
     public LoginVM(@NonNull Application application) {
         super(application);
         auth = FirebaseAuth.getInstance();
+        auth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(firebaseAuth.getCurrentUser() != null){
+                    user.setValue(firebaseAuth.getCurrentUser());
+                }
+            }
+        });
     }
 
     public LiveData<String> getError() {
@@ -34,12 +42,8 @@ public class LoginVM extends AndroidViewModel {
     }
 
     public void login(String email, String password){
-        auth.signInWithEmailAndPassword(email,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-            @Override
-            public void onSuccess(AuthResult authResult) {
-                user.setValue(authResult.getUser());
-            }
-        }).addOnFailureListener(new OnFailureListener() {
+        auth.signInWithEmailAndPassword(email,password)
+                .addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 error.setValue(e.getMessage());
