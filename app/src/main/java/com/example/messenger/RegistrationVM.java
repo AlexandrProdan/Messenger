@@ -1,6 +1,7 @@
 package com.example.messenger;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -12,9 +13,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class RegistrationVM extends AndroidViewModel {
     private FirebaseAuth auth;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference usersRef;
     private MutableLiveData<String> error = new MutableLiveData<>();
     private MutableLiveData<FirebaseUser> user = new MutableLiveData<>();
 
@@ -30,6 +35,10 @@ public class RegistrationVM extends AndroidViewModel {
                 }
             }
         });
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        usersRef = firebaseDatabase.getReference("Users");
+
     }
 
     public LiveData<FirebaseUser> getUser() {
@@ -47,9 +56,27 @@ public class RegistrationVM extends AndroidViewModel {
             String lastName,
             int age
     ){
-        auth.createUserWithEmailAndPassword(email, password).addOnFailureListener(new OnFailureListener() {
+        auth.createUserWithEmailAndPassword(email, password)
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        FirebaseUser firebaseUser = authResult.getUser();
+                        if(firebaseUser==null){return;}
+                        User user = new User(
+                                firebaseUser.getUid(),
+                                name,
+                                lastName,
+                                age,
+                                false
+                        );
+                        usersRef.child(user.getId()).setValue(user);
+                        Log.d("RegistrationVM", "New User registered"+ user.toString());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                Log.d("RegistrationVM", "did not succeed to register new user");
                 error.setValue(e.getMessage());
             }
         });

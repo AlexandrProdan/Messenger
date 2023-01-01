@@ -7,6 +7,9 @@ public class User {
     private int age;
     private Boolean isOnline;
 
+    public User() {
+    }
+
     public User(String id, String name, String lastName, int age, Boolean isOnline) {
         this.id = id;
         this.name = name;
@@ -31,7 +34,19 @@ public class User {
         return age;
     }
 
-    public Boolean isOnline() {
+    public Boolean getIsOnline() {
         return isOnline;
+    }
+
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                ", isOnline=" + isOnline +
+                '}';
     }
 }

@@ -33,9 +33,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        initViews();
+
         loginVM = new ViewModelProvider(this).get(LoginVM.class);
         observeVM();
+        initViews();
         setClickListeners();
 
     }
@@ -61,6 +62,8 @@ public class LoginActivity extends AppCompatActivity {
                     Intent intent = UsersActivity.newIntent(LoginActivity.this);
                     startActivity(intent);
                     finish();
+                }else{
+
                 }
                 Log.d(TAG, firebaseUser.toString());
             }

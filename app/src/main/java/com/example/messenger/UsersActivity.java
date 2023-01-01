@@ -9,16 +9,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class UsersActivity extends AppCompatActivity {
+    private static final String TAG = "UsersActivity";
     private UsersVM usersVM;
     private RecyclerView recyclerViewUsers;
     private UserAdapter userAdapter;
@@ -27,22 +33,17 @@ public class UsersActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users);
-        initViews();
+        recyclerViewUsers = findViewById(R.id.recyclerViewUsers);
+        userAdapter = new UserAdapter();
+        recyclerViewUsers.setAdapter(userAdapter);
+
         usersVM = new ViewModelProvider(this).get(UsersVM.class);
         observeViewModel();
-
-        List<User> users = new ArrayList<>();
-        for (int i=0; i<30;i++){
-            User user = new User(
-                    "id "+i, "Name "+i,"Lastname "+i,i, new Random().nextBoolean()
-            );
-            users.add(user);
-        }
-        userAdapter.setUserList(users);
     }
     //==============================================================================================
     private void observeViewModel(){
-        usersVM.getUser().observe(this, new Observer<FirebaseUser>() {
+
+        usersVM.getFirebaseUser().observe(this, new Observer<FirebaseUser>() {
             @Override
             public void onChanged(FirebaseUser firebaseUser) {
                 if(firebaseUser == null){
@@ -52,14 +53,23 @@ public class UsersActivity extends AppCompatActivity {
                 }
             }
         });
+
+        usersVM.getUserListFromDb().observe(this, new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> users) {
+                List<User> u = users;
+                userAdapter.setUserList(users);
+            }
+        });
     }
 
-    private void initViews(){
-        recyclerViewUsers = findViewById(R.id.recyclerViewUsers);
-        userAdapter = new UserAdapter();
 
-        recyclerViewUsers.setAdapter(userAdapter);
-    }
+//    private void initViews(){
+//        recyclerViewUsers = findViewById(R.id.recyclerViewUsers);
+//        userAdapter = new UserAdapter();
+//        recyclerViewUsers.setAdapter(userAdapter);
+//    }
+
 
     public static Intent newIntent(Context context){
         return  new Intent(context, UsersActivity.class);

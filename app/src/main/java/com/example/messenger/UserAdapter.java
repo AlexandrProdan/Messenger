@@ -1,6 +1,7 @@
 package com.example.messenger;
 
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder>{
-
+    public static final String TAG ="UserAdapter";
     private List<User> userList = new ArrayList<>();
     private OnUserClickListener onUserClickListener;
 
 
     public void setUserList(List<User> userList) {
         this.userList = userList;
+        notifyDataSetChanged();
     }
 
     public void setOnUserClickListener(OnUserClickListener onUserClickListener) {
@@ -36,12 +38,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
+        //User user = new User("a","Alex","P",1,false);
         User user = userList.get(position);
         String userInfoStr = ""+user.getName()+" "+user.getLastName()+", "+user.getAge();
         holder.textViewUserInfo.setText(userInfoStr);
+        Log.d(TAG, "onBindViewHolder: "+ userInfoStr);
 
         int bgResId;
-        if(user.isOnline()){
+        if(user.getIsOnline()){
             bgResId = R.drawable.circle_green;
         }else {
             bgResId = R.drawable.circle_red;
