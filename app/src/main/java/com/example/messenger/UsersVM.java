@@ -42,11 +42,21 @@ public class UsersVM extends AndroidViewModel {
         usersRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                FirebaseUser currentFirebaseUser = auth.getCurrentUser();
+                if (currentFirebaseUser == null) {
+                    return;
+                }
                 List<User> usersFromDb = new ArrayList<>();
                 for (DataSnapshot dataSnapshot: snapshot.getChildren()) {
                     User user = dataSnapshot.getValue(User.class);
+
+                    if (user == null) {
+                        return;
+                    }
+                    if (!currentFirebaseUser.getUid().equals(user.getId())){
                     usersFromDb.add(user);
-                    Log.d("UsersVM", "User from Db"+ user.toString());
+                    }
+
                 }
                 userListFromDb.setValue(usersFromDb);
             }

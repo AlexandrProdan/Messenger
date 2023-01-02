@@ -25,20 +25,31 @@ import java.util.List;
 
 public class UsersActivity extends AppCompatActivity {
     private static final String TAG = "UsersActivity";
+    public static final String EXTRA_CURRENT_USER_ID = "currentUserID";
+
     private UsersVM usersVM;
     private RecyclerView recyclerViewUsers;
     private UserAdapter userAdapter;
+    private String currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users);
-        recyclerViewUsers = findViewById(R.id.recyclerViewUsers);
-        userAdapter = new UserAdapter();
-        recyclerViewUsers.setAdapter(userAdapter);
+        initViews();
+
+        currentUserId = getIntent().getStringExtra(EXTRA_CURRENT_USER_ID);
 
         usersVM = new ViewModelProvider(this).get(UsersVM.class);
         observeViewModel();
+
+        userAdapter.setOnUserClickListener(new UserAdapter.OnUserClickListener() {
+            @Override
+            public void onUserClick(User user) {
+                Intent intent = ChatActivity.newIntent(UsersActivity.this,currentUserId, user.getId());
+                startActivity(intent);
+            }
+        });
     }
     //==============================================================================================
     private void observeViewModel(){
@@ -64,15 +75,17 @@ public class UsersActivity extends AppCompatActivity {
     }
 
 
-//    private void initViews(){
-//        recyclerViewUsers = findViewById(R.id.recyclerViewUsers);
-//        userAdapter = new UserAdapter();
-//        recyclerViewUsers.setAdapter(userAdapter);
-//    }
+    private void initViews(){
+        recyclerViewUsers = findViewById(R.id.recyclerViewUsers);
+        userAdapter = new UserAdapter();
+        recyclerViewUsers.setAdapter(userAdapter);
+    }
 
 
-    public static Intent newIntent(Context context){
-        return  new Intent(context, UsersActivity.class);
+    public static Intent newIntent(Context context, String currentUserId){
+        Intent intent =   new Intent(context, UsersActivity.class);
+        intent.putExtra(EXTRA_CURRENT_USER_ID, currentUserId);
+        return intent;
     }
 
     @Override
