@@ -76,9 +76,17 @@ public class UsersVM extends AndroidViewModel {
     public LiveData<List<User>> getUserListFromDb() {return userListFromDb;}
 
 
+    public void setUserOnline(Boolean online){
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        if(firebaseUser == null){return;}
+        usersRef.child(firebaseUser.getUid()).child("isOnline").setValue(online);
 
+    }
 
     public void logOut(){
+        setUserOnline(false);
         auth.signOut();
+
+
     }
 }

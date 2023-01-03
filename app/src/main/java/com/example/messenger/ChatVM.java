@@ -116,6 +116,9 @@ public class ChatVM extends ViewModel {
                     }
                 });
     }
-
-
+    //------------------------------------------setUserOnline---------------------------------------
+    public void setUserOnline(Boolean online){
+        refUsers.child(currentUserId).child("isOnline").setValue(online);
+        if(online){}
+    }
 }

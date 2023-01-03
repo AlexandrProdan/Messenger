@@ -1,12 +1,14 @@
 package com.example.messenger;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -104,6 +106,16 @@ public class ChatActivity extends AppCompatActivity {
             public void onChanged(User user) {
                 String userNameLastname = ""+user.getName()+" "+user.getLastName();
                 textViewTitle.setText(userNameLastname);
+
+                int bgResId;
+                if(user.getIsOnline()){
+                    bgResId = R.drawable.circle_green;
+                }else {
+                    bgResId = R.drawable.circle_red;
+                }
+
+                Drawable background = ContextCompat.getDrawable(ChatActivity.this, bgResId);
+                view_online_status.setBackground(background);
             }
         });
 
@@ -114,5 +126,17 @@ public class ChatActivity extends AppCompatActivity {
         intent.putExtra(EXTRA_CURRENT_USER_ID, currentUserId);
         intent.putExtra(EXTRA_OTHER_USER_ID, otherUserId);
         return intent;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        chatVM.setUserOnline(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        chatVM.setUserOnline(false) ;
     }
 }
