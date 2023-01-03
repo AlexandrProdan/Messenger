@@ -46,10 +46,11 @@
       android:layout_height="wrap_content"
       android:background="@color/white"
       android:hint="Message"
-      android:maxHeight="400dp"
+      android:maxHeight="200dp"
       android:inputType="textMultiLine"
       android:padding="16dp"
       android:paddingEnd="48dp"
+      android:textColor="@color/black"
       app:layout_constraintBottom_toBottomOf="parent"
       tools:text="@tools:sample/lorem/random" />
 
@@ -58,9 +59,9 @@
       android:layout_width="48dp"
       android:layout_height="48dp"
       android:src="@android:drawable/ic_menu_send"
-      app:layout_constraintTop_toTopOf="@id/editTextInputMessage"
+
       app:layout_constraintBottom_toBottomOf="@+id/editTextInputMessage"
       app:layout_constraintEnd_toEndOf="parent"
-      app:tint="@color/purple_500" />
+      app:tint="@color/purple_700" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
